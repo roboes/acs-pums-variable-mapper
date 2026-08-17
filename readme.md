@@ -17,7 +17,7 @@ The processed dataset includes human-readable values for coded variables, making
 
 ### Python dependencies
 
-```.ps1
+```ps1
 python -m pip install numpy pandas requests
 ```
 
@@ -25,7 +25,7 @@ python -m pip install numpy pandas requests
 
 #### `zipfile_download`
 
-```.py
+```py
 zipfile_download(url, directory)
 ```
 
@@ -40,7 +40,7 @@ zipfile_download(url, directory)
 
 #### `acs_pums_variable_mapper`
 
-```.py
+```py
 acs_pums_variable_mapper(df, acs_pums_data_dictionary_path=None, acs_pums_data_dictionary_url=None, survey_level='Person-Level')
 ```
 
@@ -58,7 +58,7 @@ acs_pums_variable_mapper(df, acs_pums_data_dictionary_path=None, acs_pums_data_d
 
 ### Code Workflow Example
 
-```.py
+```py
 # Import packages
 import os
 import numpy as np

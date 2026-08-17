@@ -14,20 +14,11 @@ globals().clear()
 
 
 # Import packages
-from io import BytesIO, StringIO
 import re
-from zipfile import ZipFile, ZIP_DEFLATED
+from io import BytesIO, StringIO
+from zipfile import ZIP_DEFLATED, ZipFile
 
-import pandas as pd
 import requests
-
-
-# Settings
-
-## Copy-on-Write (will be enabled by default in version 3.0)
-if pd.__version__ >= '1.5.0' and pd.__version__ < '3.0.0':
-    pd.options.mode.copy_on_write = True
-
 
 ###########
 # Functions
@@ -39,9 +30,12 @@ def zipfile_download(*, url, directory):
         zip_file.extractall(path=directory)
 
 
-def acs_pums_variable_mapper(*, df, acs_pums_data_dictionary_path=None, acs_pums_data_dictionary_url=None, survey_level='Person-Level', skip_variables=[]):
+def acs_pums_variable_mapper(*, df, acs_pums_data_dictionary_path=None, acs_pums_data_dictionary_url=None, survey_level='Person-Level', skip_variables=None):
     if acs_pums_data_dictionary_path is None and acs_pums_data_dictionary_url is None:
         raise ValueError('Either "acs_pums_data_dictionary_path" or "acs_pums_data_dictionary_url" needs to be defined.')
+
+    if skip_variables is None:
+        skip_variables = []
 
     # Create a copy of the original DataFrame to avoid modifying it
     df = df.copy()
@@ -99,10 +93,9 @@ def acs_pums_variable_mapper(*, df, acs_pums_data_dictionary_path=None, acs_pums
     # Automatically apply mappings to all uppercase columns
     for column in df.columns:
         if column.isupper() and column not in skip_variables:  # Skip columns in skip_variables
-            if column.isupper():  # Check if the column name is uppercase
-                mappings = mappings_extract(column_name=column, lines=lines)
-                if mappings:  # Only map if mappings are found
-                    df[column] = df[column].map(mappings)
+            mappings = mappings_extract(column_name=column, lines=lines)
+            if mappings:  # Only map if mappings are found
+                df[column] = df[column].map(mappings)
 
     # Return objects
     return df
